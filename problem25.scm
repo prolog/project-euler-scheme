@@ -8,8 +8,8 @@
 	       (prev 0)
 	       (cur 1))
       (if (= fib-term n)
-	cur
-	(loop (+ fib-term 1) cur (+ prev cur))))))
+        cur
+        (loop (+ fib-term 1) cur (+ prev cur))))))
 
 ;; Find the Fibonacci number of the given length
 (define find-fib-of-length
