@@ -18,7 +18,7 @@
                           #f
                           (loop (+ i 2))))))))))
 
-;; Find all prime numbers up to a given n.
+;; Find the first n primes.
 (define problem-7
   (lambda (n)
     (let ((lst '())
