@@ -2,6 +2,8 @@
 ;;;
 ;;; Copyright (c) 2012 Julian Day <jcd748@mail.usask.ca>
 
+(load "jcd-listlib.scm")
+
 ;; Convert numeric chars into their number equivalents.
 (define numchar->number
   (lambda (numchar)
@@ -20,18 +22,6 @@
 (define number->list
   (lambda (n)
     (map numchar->number (string->list (number->string n)))))
-
-;; Convert a list of numbers to a number.
-;; e.g., (9 0 9 0) = 9090
-(define list->number
-  (lambda (lst)
-    (if (null? lst)
-        0
-        (let loop ((num-lst lst)
-                   (exp (- (length lst) 1)))
-          (if (null? num-lst)
-              0
-              (+ (* (car num-lst) (expt 10 exp)) (loop (cdr num-lst) (- exp 1))))))))
 
 ;; A number is ineligible to be a reversible number if it has leading or
 ;; trailing 0s.
