@@ -16,7 +16,7 @@
   (lambda (l n e)
     (if (= 0 n)
         (cons e l)
-        (cons (car l) 
+        (cons (car l)
               (insert (cdr l) (- n 1) e)))))
  
 (define sequence 
