@@ -1,5 +1,7 @@
 ;;; Julian's little numberic library, used for Project Euler problems.
 
+(load "jcd-listlib.scm")
+
 ;; Create a list of numbers from 1 to n.
 (define num-list
   (lambda (n)
@@ -87,3 +89,18 @@
     (let ((num-lst (number->list n)))
       (apply + (map (lambda (x)
                       (expt x pow)) num-lst)))))
+
+;;; Check to see if a given number is pandigital (contains all the digits
+;;; from 1 to 9, and does not contain 0)
+(define pandigital-lst?
+  (lambda (num-lst digits-lst)
+    (if (null? digits-lst)
+        #t
+        (if (and (zero? (occurrences num-lst 0)) (equal? (occurrences num-lst (car digits-lst)) 1))
+            (pandigital-lst? num-lst (cdr digits-lst))
+            #f))))
+        
+(define pandigital?
+  (lambda (n)
+    (let ((num-lst (number->list n)))
+      (pandigital-lst? num-lst (num-list 9)))))

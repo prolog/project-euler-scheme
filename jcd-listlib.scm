@@ -34,3 +34,14 @@
                                     (insert p n (car lst)))
                                   (sequence 0 (length p))))
                            (permute (cdr lst)))))))
+
+;; Get the number of occurrences of an item within a list
+(define occurrences
+  (lambda (lst item)
+    (let loop ((occ-lst lst)
+               (occ 0))
+      (if (null? occ-lst)
+          occ
+          (if (equal? (car occ-lst) item)
+              (loop (cdr occ-lst)(+ occ 1))
+              (loop (cdr occ-lst) occ))))))
