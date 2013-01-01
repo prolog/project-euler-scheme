@@ -104,3 +104,40 @@
   (lambda (n)
     (let ((num-lst (number->list n)))
       (pandigital-lst? num-lst (num-list 9)))))
+
+;; Find the nearest power of x to a given positive number.
+(define nearest-power
+  (lambda (n x)
+    (let loop ((cur-pow 0)
+               (prev 0))
+      (let ((expt-val (expt x cur-pow)))
+        (if (> expt-val n)
+            prev
+            (loop (+ cur-pow 1) expt-val))))))
+
+;; Convert a decimal number into binary (but still as a decimal number, so
+;; 11d gets converted into 1011d, which is (if it were actually binary) the
+;; binary value.
+(define decimal->binary
+  (lambda (n)
+    (string->number (decimal->binary-str n))))
+
+;; Convert a decimal value into a binary value, stored as a string.
+(define decimal->binary-str
+  (lambda (n)
+    (let ((x (nearest-power n 2)))
+      (let loop ((cur-val n)
+                 (cur-power x)
+                 (binary-str (make-string 0)))
+        (if (< cur-power 1)
+            binary-str
+            (loop ((lambda ()
+                     (if (> cur-power cur-val)
+                         cur-val
+                         (- cur-val cur-power))))
+                  (/ cur-power 2)
+                  (string-append binary-str 
+                                 ((lambda ()
+                                    (if (> cur-power cur-val)
+                                        "0"
+                                        "1"))))))))))                      
