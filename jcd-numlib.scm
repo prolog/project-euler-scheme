@@ -61,6 +61,13 @@
       (if (zero? i)
           result
           (loop (- i 1) (* result i))))))
+
+;; n choose k
+(define C
+  (lambda (n k)
+    (/ (! n) 
+       (* (! k) 
+          (! (- n k))))))
   
 ;; Convert numeric chars into their number equivalents.
 (define numchar->number
