@@ -147,4 +147,9 @@
                                  ((lambda ()
                                     (if (> cur-power cur-val)
                                         "0"
-                                        "1"))))))))))                      
+                                        "1"))))))))))
+
+;; closed form of sum from 1 to n
+(define sum
+  (lambda (n)
+    (/ (* n (+ n 1)) 2)))
