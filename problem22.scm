@@ -1,6 +1,8 @@
 ;;; Project Euler, problem 22 - Name scores
 ;;; Copyright 2013 Julian Day <jcd748@mail.usask.ca>
 
+(load "jcd-listlib.scm")
+
 ;; word-score assumes that the "word" is passed in as a list of letters.
 ;; The word score return value is determined by summing the alphabetical
 ;; position of each letter.
@@ -10,24 +12,6 @@
         0
         (+ (+ 1 (char- (car word) #\A))
            (word-score (cdr word))))))
-
-;; Read a CSV file into a list.  Assumption is that everything between
-;; commas is quoted.
-(define csvfile->list
-  (lambda (filename)
-    (let ((lst '())
-          (file (open-input-file filename)))
-      (let loop ((cur-val (read file))
-                 (llst lst))
-        (if (eof-object? cur-val)
-            llst
-            ; Check to see if the first character is a #\,
-            ; Everything after the first element should be.
-            (if (pair? cur-val)
-                (loop (read file) (append llst (cdr cur-val)))
-                ; If it's not a pair, it'll be the first item
-                ; read, which will be a string.
-                (loop (read file) (cons cur-val '()))))))))
 
 ;; The list-score is determined by multiplying the word-score of each item in
 ;; the list by its index within the list, and summing the result.  It is

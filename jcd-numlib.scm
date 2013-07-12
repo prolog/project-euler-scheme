@@ -153,3 +153,52 @@
 (define sum
   (lambda (n)
     (/ (* n (+ n 1)) 2)))
+
+;; tri-vpos returns the position in the 1D vector of the given row and column
+;; of the triangle.
+(define tri-vpos
+  (lambda (row col)
+    (+ (sum row) col)))
+
+;; look up a particular position in the triangle.
+(define tri-ref
+  (lambda (tri row col)
+    (vector-ref tri (tri-vpos row col))))
+
+;; find-max-path-in-triangle performs dynamic programming, starting at
+;; the bottom of a particular triangle, and working its way up, creating a
+;; number of temporary maximum paths as it goes.
+;;
+;; An assumption is made that each row i of the triangle is length i.
+(define find-max-path-in-triangle
+  (lambda (triangle one-based-row)
+    (let loop ((tri triangle)
+               (row (- one-based-row 1)))
+      (if (< row 0)
+          (vector-ref tri 0)
+          (loop (max-row-path tri row) 
+                (- row 1))))))
+
+;; max-row-path takes a triangle vector as a parameter, and a row q.
+;; It iterates over each pair (0,1), (1,2), ... , (n-1, n) in the row.  For
+;; each pair (i, i+1) in row q, it finds the maximum, and adds it to position 
+;; i in row q-1.
+(define max-row-path
+  (lambda (tri row)
+    (begin
+      (let ((cur-tri (vector-copy tri)))
+        (let loop ((i 0)
+                   (ct cur-tri))
+          ; If we're at the last element, we can't add any more, so
+          ; return the current, updated triangle vector.
+          (if (= i row)
+              ct
+              (begin
+                (let ((update-idx (- (tri-vpos row i) row))
+                      (elem-i (tri-ref ct row i))
+                      (elem-i1 (tri-ref ct row (+ i 1))))
+                  (vector-set! ct 
+                               update-idx
+                               (+ (vector-ref ct (- (tri-vpos row i) row))
+                                  (max elem-i elem-i1)))
+                  (loop (+ i 1) ct)))))))))

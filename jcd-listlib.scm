@@ -45,3 +45,32 @@
           (if (equal? (car occ-lst) item)
               (loop (cdr occ-lst)(+ occ 1))
               (loop (cdr occ-lst) occ))))))
+
+;; Reads a file into a list.
+(define file->list
+  (lambda (file)
+    (let ((port (open-input-file file)))
+      (let file-loop ((x (read port)))
+        (if (eof-object? x)
+            (begin
+              (close-input-port port)
+              '())
+            (cons x (file-loop (read port))))))))
+
+;; Read a CSV file into a list.  Assumption is that everything between
+;; commas is quoted.
+(define csvfile->list
+  (lambda (filename)
+    (let ((lst '())
+          (file (open-input-file filename)))
+      (let loop ((cur-val (read file))
+                 (llst lst))
+        (if (eof-object? cur-val)
+            llst
+            ; Check to see if the first character is a #\,
+            ; Everything after the first element should be.
+            (if (pair? cur-val)
+                (loop (read file) (append llst (cdr cur-val)))
+                ; If it's not a pair, it'll be the first item
+                ; read, which will be a string.
+                (loop (read file) (cons cur-val '()))))))))
