@@ -202,3 +202,73 @@
                                (+ (vector-ref ct (- (tri-vpos row i) row))
                                   (max elem-i elem-i1)))
                   (loop (+ i 1) ct)))))))))
+
+;; Get the list of proper factors of a number (does not include the number).
+(define proper-divisors
+  (lambda (n)
+    (filter (lambda (q) 
+              (not (= q n))) 
+            (factors n))))
+
+;; Get the list of factors for a particular number.
+(define factors
+  (lambda (n)
+    (begin
+      (let ((n-upper (floor (sqrt n))))
+        (factor-list n n-upper)))))
+
+;; Create a list of factors for a given number, checking "current" down to 0.
+(define factor-list
+  (lambda (n current)
+    (if (= 0 current)
+        '() ; base case - stop the recursion.
+        (if (= 0 (modulo n current))
+             ; If n mod current = 0, then we've got a factor.
+             ; Add current, and n/current (since factors come in pairs),
+             ; as long as n/current != current.
+            (if (not (= current (/ n current)))
+                (cons current (cons (/ n current) (factor-list n (- current 1))))
+                (cons current (factor-list n (- current 1))))
+            (factor-list n (- current 1))))))
+
+;; divisor-sum-property returns 'abundant if the sum of a number's proper
+;; divisors is greater than the number, 'perfect if it equals the number,
+;; and 'deficient if it is less than the number.
+(define divisor-sum-property
+  (lambda (n)
+    (let ((factor-sum (apply + (proper-divisors n))))
+      (cond ((> factor-sum n) 'abundant)
+            ((= factor-sum n) 'perfect)
+            (else 'deficient)))))
+
+;; abundant? returns #t if n is an abundant number, #f otherwise.
+(define abundant?
+  (lambda (n)
+    (eq? 'abundant (divisor-sum-property n))))
+
+;; perfect? returns #t if n is a perfect number, #f otherwise.
+(define perfect?
+  (lambda (n)
+    (eq? 'perfect (divisor-sum-property n))))
+
+;; deficient? returns #t if n is a deficient number, #f otherwise.
+(define deficient?
+  (lambda (n)
+    (eq? 'deficient (divisor-sum-property n))))
+
+;; sums returns all sums that can be created from the numbers in the list,
+;; up to a given max.  The result is returned as a vector of size max,
+;; where #t in a given position i means that i can be created by summing two
+;; values in the list.
+(define sums
+  (lambda (lst max)
+    (let ((sum-vec (make-vector max #f)))
+      (let loop ((num-pairs (sym-pair-list lst)))
+        (if (null? num-pairs)
+            sum-vec
+            (begin
+              (let ((cur-sum (apply + (car num-pairs))))
+                (if (< cur-sum max)
+                    (vector-set! sum-vec (apply + (car num-pairs)) #t)))
+              (loop (cdr num-pairs))))))))
+            
