@@ -1,6 +1,7 @@
 ;;; Julian's little numberic library, used for Project Euler problems.
 
 (load "jcd-listlib.scm")
+(load "jcd-strlib.scm")
 
 ;; Create a list of numbers from 1 to n.
 (define num-list
@@ -15,6 +16,12 @@
     (cond ((= n 1) #f)
           ((= n 2) #t)
           ((= n 3) #t)
+          ((= n 4) #f)
+          ((= n 5) #t)
+          ((= n 6) #f)
+          ((= n 7) #t)
+          ((= n 8) #f)
+          ((= n 9) #f)
            (else
             (if (zero? (modulo n 2))
                 #f
@@ -272,3 +279,48 @@
                     (vector-set! sum-vec (apply + (car num-pairs)) #t)))
               (loop (cdr num-pairs))))))))
             
+;; rotations provides a list of all rotations of a given number, excluding the 
+;; number itself.
+(define rotations
+  (lambda (num)
+    (if (<= (string-length (number->string num)) 1)
+        ; Single-digit numbers have no rotations that are not the same value.
+        '()
+        (let loop ((num-str (number->string num))
+                   (initial-num #t)
+                   (remain-rot (- (string-length (number->string num)) 1))
+                   (rotation-lst '()))
+          (if (zero? remain-rot)
+              (cons (string->number num-str) rotation-lst)
+              (loop (rotate num-str)
+                    #f
+                    (- remain-rot 1)
+                    (if initial-num
+                        rotation-lst 
+                        (cons (string->number num-str) rotation-lst))))))))
+
+;; checks to see if a number could be circular prime
+;; first check: > 10? (anything under 10 is basically a special case)
+;; second check: disallowed digits
+(define potentially-circular-prime?
+  (lambda (num)
+    (if (< num 10)
+        #t
+        (let ((num-l (number->list num)))
+          (not (or (member 2 num-l)
+                   (member 4 num-l)
+                   (member 5 num-l)
+                   (member 6 num-l)
+                   (member 8 num-l)
+                   (member 0 num-l)))))))
+
+;; returns #t if all the numbers in the rotation list are prime.
+(define rotations-prime?
+  (lambda (num)
+    (let loop ((rotation-lst (rotations num)))
+      (if (null? rotation-lst)
+          #t
+          (if (prime? (car rotation-lst))
+              (loop (cdr rotation-lst))
+              #f)))))
+                      
